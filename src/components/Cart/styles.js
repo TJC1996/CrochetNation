@@ -15,6 +15,9 @@ export const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
 export const StyledCardActions = styled(CardActions)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'flex-end',
+  flexDirection: 'column',
+  alignItems: 'center',
+
 }));
 
 export const StyledCardContent = styled(CardContent)(({ theme }) => ({

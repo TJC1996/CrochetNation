@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Typography, Button, Divider } from '@mui/material';
 import { Elements, CardElement, ElementsConsumer } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -6,37 +6,92 @@ import { loadStripe } from '@stripe/stripe-js';
 import Review from './Review';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
+const PaymentForm = ({ checkoutToken, nextStep, shippingData, onCaptureCheckout, setOrderLoading }) => {
+  const [loading, setLoading] = useState(false);
 
-const PaymentForm = ({ checkoutToken, nextStep, backStep, shippingData, onCaptureCheckout }) => {
   const handleSubmit = async (event, elements, stripe) => {
     event.preventDefault();
 
     if (!stripe || !elements) return;
 
+    if (!shippingData) {
+      console.error('Shipping data is not available');
+      return;
+    }
+
+    setOrderLoading(true);
     const cardElement = elements.getElement(CardElement);
 
-    const { error, paymentMethod } = await stripe.createPaymentMethod({ type: 'card', card: cardElement });
+    const { error, paymentMethod } = await stripe.createPaymentMethod({
+      type: 'card',
+      card: cardElement,
+      billing_details: {
+        name: `${shippingData.firstName} ${shippingData.lastName}`,
+        email: shippingData.email,
+        address:{
+          line1: shippingData.streetAddress,
+          city: shippingData.city,
+          postal_code: shippingData.zipcode,
+          state: shippingData.shippingSubdivision,
+          country: shippingData.shippingCountry,
+        },
+      },
+    });
+
+
+    
 
     if (error) {
       console.log('[error]', error);
+      setLoading(false);
     } else {
+    
       const orderData = {
         line_items: checkoutToken.line_items,
-        customer: { firstname: shippingData.firstName, lastname: shippingData.lastName, email: shippingData.email },
-        shipping: { name: 'Primary Shipping', street: shippingData.streetAddress, town_city: shippingData.city, county_state: shippingData.shippingSubdivision, postal_zip_code: shippingData.zipcode, country: shippingData.shippingCountry },
-        billing: { name: `${shippingData.firstName} ${shippingData.lastName}`, street: shippingData.streetAddress, town_city: shippingData.city, county_state: shippingData.shippingSubdivision, postal_zip_code: shippingData.zipcode, country: shippingData.shippingCountry },
+        customer: {
+          firstname: shippingData.firstName,
+          lastname: shippingData.lastName,
+          email: shippingData.email,
+        },
+        shipping: {
+          name: `${shippingData.firstName} ${shippingData.lastName}`,
+          street: shippingData.streetAddress,
+          town_city: shippingData.city,
+          county_state: shippingData.shippingSubdivision,
+          postal_zip_code: shippingData.zipcode,
+          country: shippingData.shippingCountry,
+        },
+        billing: { 
+          name: `${shippingData.firstName2} ${shippingData.lastName2}`, 
+          street: shippingData.streetAddress2, 
+          town_city: shippingData.city2, 
+          county_state: shippingData.state, 
+          postal_zip_code: shippingData.zipcode2, 
+          country: shippingData.shippingCountry 
+        },
         fulfillment: { shipping_method: shippingData.shippingOption },
         payment: {
-          gateway: 'stripe',
+          gateway: 'gway_QlW0RpxRGMJXwn',
           stripe: {
             payment_method_id: paymentMethod.id,
           },
         },
       };
 
-      onCaptureCheckout(checkoutToken.id, orderData);
-
+      
+      
+      console.log('orderData', orderData);
       nextStep();
+      try {
+        await onCaptureCheckout(checkoutToken.id, orderData);
+      } catch (error) {
+        console.error('Failed to capture checkout:', error);
+      } finally {
+        setOrderLoading(false);
+        
+      }
+
+
     }
   };
 
@@ -51,7 +106,7 @@ const PaymentForm = ({ checkoutToken, nextStep, backStep, shippingData, onCaptur
             <CardElement />
             <br /> <br />
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <Button type="submit" variant="contained" disabled={!stripe} color="primary">
+              <Button type="submit" variant="contained" disabled={!stripe || loading} color="primary">
                 Pay {checkoutToken.subtotal.formatted_with_symbol}
               </Button>
             </div>
@@ -64,3 +119,6 @@ const PaymentForm = ({ checkoutToken, nextStep, backStep, shippingData, onCaptur
 };
 
 export default PaymentForm;
+
+
+

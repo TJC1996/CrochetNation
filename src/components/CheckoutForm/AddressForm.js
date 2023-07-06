@@ -1,3 +1,7 @@
+
+
+//Chat GPT Help
+
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -6,13 +10,15 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { FormProvider, useForm } from 'react-hook-form';
 import FormInput from './CustomTextField';
-import { InputLabel, MenuItem, Select } from '@mui/material';
+import { InputLabel, MenuItem, Select, Button } from '@mui/material';
 import { useState, useEffect } from 'react';
+
 
 import { commerce } from '../../lib/commerce';
 
 export default function AddressForm({ checkoutToken, next }) {
-  
+
+
   const [shippingCountries, setShippingCountries] = useState([]);
   const [shippingCountry, setShippingCountry] = useState('');
   const [shippingSubdivisions, setShippingSubdivisions] = useState([]);
@@ -27,20 +33,33 @@ export default function AddressForm({ checkoutToken, next }) {
       streetAddress: "",
       city: "",
       zipcode: "",
+      firstName2: "",
+      lastName2: "",
+      streetAddress2: "",
+      city2: "",
+      state: "",
+      zipcode2: ""
     },
   });
 
   const countries = Object.entries(shippingCountries).map(([code, name]) => ({ id: code, label: name }))
   const subdivisions = Object.entries(shippingSubdivision).map(([code, name]) => ({ id: code, label: name }))
-  const options = shippingOptions.map((s0) => ({ id: s0.id, label: `${s0.description} - (${s0.price.formatted_with_symbol})`}))
+  const options = shippingOptions.map((s0) => ({ id: s0.id, label: `${s0.description} - (${s0.price.formatted_with_symbol})` }))
 
 
 
-  const fetchShippingCountries = async (checkoutTokenId) => {
-    const { countries } = await commerce.services.localeListShippingCountries(checkoutTokenId);
-    // console.log(countries);
-    setShippingCountries(countries);
-    setShippingCountry(Object.keys(countries)[0])
+  const fetchShippingCountries = (checkoutTokenId) => {
+    if (!checkoutTokenId) {
+      return;
+    }
+
+    commerce.services.localeListShippingCountries(checkoutTokenId)
+      .then(({ countries }) => {
+        console.log(`Countries`, countries);
+        setShippingCountries(countries);
+        setShippingCountry(Object.keys(countries)[0]);
+      })
+      .catch((error) => console.log(error));
   }
 
   const fetchSubdivisions = async (countryCode) => {
@@ -53,23 +72,27 @@ export default function AddressForm({ checkoutToken, next }) {
 
   const fetchShippingOptions = async (checkoutTokenId, country, region = null) => {
     const options = await commerce.checkout.getShippingOptions(checkoutTokenId, { country, region })
-
+    console.log(`Options:`, options);
     setShippingOptions(options);
     setShippingOption(options[0].id);
 
   }
 
   useEffect(() => {
-    fetchShippingCountries(checkoutToken)
-  }, []);
+    if (checkoutToken) {
+      fetchShippingCountries(checkoutToken.id)
+    }
+  }, [checkoutToken]);
+
 
   useEffect(() => {
-      if(shippingCountry) fetchSubdivisions(shippingCountry);
+    if (shippingCountry) fetchSubdivisions(shippingCountry);
   }, [shippingCountry]);
 
+
   useEffect(() => {
-      if(shippingSubdivision) fetchShippingOptions(checkoutToken, shippingCountry, shippingSubdivision);
-  }, [shippingSubdivision]);
+    if (shippingSubdivision && checkoutToken) fetchShippingOptions(checkoutToken.id, shippingCountry, shippingSubdivision);
+  }, [shippingSubdivision, checkoutToken, shippingCountry]);
 
   return (
     <React.Fragment>
@@ -118,6 +141,30 @@ export default function AddressForm({ checkoutToken, next }) {
               </Select>
             </Grid>
 
+            <Grid item xs={12}>
+            <Typography variant="h6" gutterBottom>
+              Billing address
+            </Typography>
+            <Grid container spacing={3}>
+              {/* Billing Address Inputs */}
+              <FormInput required name='firstName2' label='First Name' />
+              <FormInput required name='lastName2' label='Last Name' />
+              <FormInput required name='streetAddress2' label='Street Address' />
+              <FormInput required name='city2' label='City' />
+              <FormInput required name='state' label='State' /> 
+              <FormInput required name='zipcode2' label='Zipcode' />
+            </Grid>
+          </Grid>
+
+            <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{ mt: 3, ml: 1, width: 'auto', height: 'auto' }}
+            >
+            Next
+          </Button>
+          </Grid>
           </Grid>
 
         </form>

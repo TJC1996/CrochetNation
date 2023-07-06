@@ -28,8 +28,8 @@ import Button from '@mui/material/Button';
 const drawerWidth = 240;
 const navItems = [
   { name: 'Shop', path: '/' },
-  { name: 'About', path: '/about' },
-  { name: 'Contact', path: '/contact' },
+  { name: 'About', path: '/about-us' },
+  { name: 'Contact', path: '/contact-us' },
 ];
 
 
@@ -137,8 +137,12 @@ function DrawerAppBar(props) {
           </Box>
           {location.pathname === '/' ? (
             <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-
-              <Link to="/cart">
+              <IconButton component={Link} to="/cart" aria-label="Show cart items" color="inherit" position='end' sx={{ color: '#FFDA03' }}>
+              <Badge badgeContent={totalItems} color="secondary" sx={{ color: '#FFDA03', display: 'inline-block' }}>
+              <ShoppingCart />
+              </Badge>
+              </IconButton>
+              {/* <Link to="/cart">
 
 
                 <IconButton component={Link} to="/cart" aria-label="Show cart items" color="inherit" position='end' sx={{ color: '#FFDA03' }}>
@@ -147,7 +151,7 @@ function DrawerAppBar(props) {
                   </Badge>
                 </IconButton>
 
-              </Link>
+              </Link> */}
 
 
             </Box>

@@ -1,3 +1,4 @@
+
 import * as React from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import AppBar from '@mui/material/AppBar';
@@ -18,6 +19,7 @@ import Review from '../Review';
 import { useState, useEffect } from 'react';
 import { commerce } from '../../../lib/commerce'
 import { Link } from 'react-router-dom';
+import CircularProgress from '@mui/material/CircularProgress';
 
 function Copyright() {
   return (
@@ -32,7 +34,7 @@ function Copyright() {
   );
 }
 
-const steps = ['Shipping address', 'Review your order', 'Payment Details'];
+const steps = ['Shipping/Billing', 'Review your order', 'Payment Details'];
 
 
 
@@ -42,11 +44,18 @@ const defaultTheme = createTheme();
 export default function Checkout({ cart, order, onCaptureCheckout, error }) {
   const [activeStep, setActiveStep] = React.useState(0);
   const [checkoutToken, setCheckoutToken] = useState(null);
-  const [shippingData, setShippingData] = useState({});
+  const [shippingData, setShippingData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [orderLoading, setOrderLoading] = useState(true);
+
+  useEffect(() => {
+    console.log('shippingData:', shippingData);
+  }, [shippingData]);
 
   const handleNext = () => {
     setActiveStep(activeStep + 1);
   };
+
 
   const handleBack = () => {
     setActiveStep(activeStep - 1);
@@ -54,7 +63,8 @@ export default function Checkout({ cart, order, onCaptureCheckout, error }) {
 
   useEffect(() => {
     const generateToken = async () => {
-        if (cart && cart.id) {
+      setLoading(true);
+        if (cart && cart.id && cart.line_items.length > 0) {
             try {
                 const token = await commerce.checkout.generateToken(cart.id, { type: 'cart' });
                 console.log('Checkout token:', token);
@@ -63,10 +73,15 @@ export default function Checkout({ cart, order, onCaptureCheckout, error }) {
                 console.error("There was an error generating the token:", error.response);
             }
         }
+        setLoading(false);
     }
 
     generateToken();
 }, [cart]); // Depend on `cart` to ensure useEffect runs when `cart` changes
+
+useEffect(() => {
+  console.log(`CheckoutToken in Checkout.jsx: (useEffect)`,checkoutToken);
+}, [checkoutToken]);
 
 const nextStep = () => setActiveStep((prevActiveStep) => prevActiveStep + 1)
 const backStep = () => setActiveStep((prevActiveStep) => prevActiveStep - 1)
@@ -77,18 +92,20 @@ const next = (data) => {
 
 }
 
+
   function getStepContent(step) {
     switch (step) {
       case 0:
-        return <AddressForm checkoutToken={checkoutToken} next={next} />;
+        return <AddressForm checkoutToken={checkoutToken} next={next} setShippingData={setShippingData}/>;
       case 1:
         return <Review checkoutToken={checkoutToken} />;
       case 2:
-        return <PaymentForm shippingData={shippingData} checkoutToken={checkoutToken} nextStep={nextStep} backStep={backStep} onCaptureCheckout={onCaptureCheckout}/>;
+        return <PaymentForm setOrderLoading={setOrderLoading} checkoutToken={checkoutToken} nextStep={nextStep} shippingData={shippingData} backStep={backStep} onCaptureCheckout={onCaptureCheckout}/>;
       default:
         throw new Error('Unknown step');
     }
   }
+
 
   
   return (
@@ -123,15 +140,33 @@ const next = (data) => {
             ))}
           </Stepper>
           {activeStep === steps.length ? (
-            <React.Fragment>
-              <Typography variant="h5" gutterBottom>
-                Thank you for your order.
-              </Typography>
-              <Typography variant="subtitle1">
-                Your order number is #2001539. We have emailed your order
-                confirmation, and will send you an update when your order has
-                shipped.
-              </Typography>
+  <React.Fragment>
+    <Typography variant="h5" gutterBottom>
+      Thank you for your order.
+    </Typography>
+    {orderLoading ? (
+      <Typography variant="subtitle1">
+        Loading Order Details...
+        <Box display="flex" justifyContent="center" m={1} p={1}>
+        <CircularProgress />
+        </Box>
+      </Typography>
+    ) : order ? (
+      <Typography variant="subtitle1">
+        Your order number is #{order.customer_reference}. We have emailed your order
+        confirmation, and will send you an update when your order has
+        shipped.
+      </Typography>
+    ) : (
+      <Typography variant="subtitle1">
+        There was an error with your order. Please try again.
+      </Typography>
+    )}
+              
+            
+              <Box display="flex" justifyContent="center" m={1} p={1}>
+                <Button component={Link} to='/' variant='outlined' type='button'>Back to Shop</Button>
+              </Box>
             </React.Fragment>
           ) : (
             <React.Fragment>
@@ -154,7 +189,7 @@ const next = (data) => {
                 </Button>
                 )}
                 
-                { (activeStep === 0 || activeStep === 1) && 
+                { (activeStep === 1) && 
     <Button
         type="submit"
         variant="contained"
@@ -176,70 +211,3 @@ const next = (data) => {
 }
 
 
-// import React, { useState } from 'react';
-// import { Step, StepLabel, Typography } from '@mui/material/';
-
-// import { StyledToolbar, StyledLayout, StyledPaper, StyledStepper } from './styles';
-
-// const steps = ['Shipping Address', 'Payment Details'];
-
-// const Checkout = () => {
-//   const [activeStep, setActiveStep] = useState(0);  
-//   return (
-//     <>
-//       <StyledToolbar />
-//       <StyledLayout>
-//         <StyledPaper>
-//             <Typography variant="h4" align="center">Checkout</Typography>
-//             <StyledStepper>
-//                 {steps.map((step) => (
-//                  <Step key={step}>
-//                         <StepLabel>{step}</StepLabel>
-//                  </Step>
-//                 ))}
-//             </StyledStepper>
-//         </StyledPaper>
-//       </StyledLayout>
-//     </>
-//   )
-// };
-
-// export default Checkout;
-
-
-
-// import React, { useState } from 'react'
-// import { Paper, Stepper, Step, StepLabel, Typography, CircularProgress, Divider, Button } from '@mui/material/';
-
-// // import useStyles from './styles';
-
-// import { StyledToolbar, StyledLayout, StyledPaper, StyledStepper } from './styles';
-
-
-// const steps = ['Shipping Address', 'Payment Details'];
-
-// const Checkout = () => {
-//   const [activeStep, setActiveStep] = useState(0);  
-//   return (
-//     <>
-//       <StyledToolbar/>
-//       <StyledLayout>
-//         <StyledPaper>
-//             <Typography variant="h4" align="center">Checkout</Typography>
-//             <StyledStepper>
-//                 {steps.map((step) => (
-//                  <Step key={step}>
-//                         <StepLabel>{step}</StepLabel>
-//                  </Step>
-                
-//                 ))}
-                       
-
-//             </StyledStepper>
-//         </StyledPaper>
-//       </StyledLayout>
-//     </>
-//   )
-// };
-
-// export default Checkout;

@@ -5,12 +5,15 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // require('dotenv').config();
 
 import { Products, Navbar, Cart, Checkout} from './components'
+import AboutUs from './components/About/AboutUs';
+import ContactUs from './components/Contact/ContactUs';
+
 
 const App = () => {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState({});
   const [order, setOrder] = useState({});
-  const [errorMessage, setErrorMessage] = useState({});
+  const [errorMessage, setErrorMessage] = useState('');
 
   if (cart && cart.line_items) {
     console.log(cart);
@@ -80,6 +83,7 @@ const App = () => {
   const handleCaptureCheckout = async (checkoutTokenId, newOrder) => {
     try{
       const incomingOrder = await commerce.checkout.capture(checkoutTokenId, newOrder);
+
       setOrder(incomingOrder);
       refreshCart();
     } catch (error) {
@@ -121,6 +125,8 @@ const App = () => {
           error={errorMessage}
           />
           } />
+          <Route exact path="/about-us" element={<AboutUs />} />
+          <Route exact path="/contact-us" element={<ContactUs />} />
         </Routes>
       </div>
 

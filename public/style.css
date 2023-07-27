@@ -1,5 +1,6 @@
 #background {
-    background-color: #FFFAFA;  /* your desired color */
+        background: radial-gradient(circle, #FFC0CB, #ADD8E6);  
+    
 }
 
 p {

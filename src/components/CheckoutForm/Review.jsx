@@ -1,8 +1,8 @@
 import React from 'react';
 import { Typography, List, ListItem, ListItemText } from '@mui/material/';
-
-const Review = ({ checkoutToken }) => {
-
+import { useState, useEffect } from 'react';
+const Review = ({ checkoutToken, setTotalCost }) => {
+  // console.log(setTotalCost);
   // Calculate the total cost including shipping
   const totalCost = parseFloat(checkoutToken.total.formatted) + parseFloat(checkoutToken.shipping_methods[0].price.formatted);
 
@@ -14,6 +14,10 @@ const Review = ({ checkoutToken }) => {
 
   const formattedTotalCost = (totalCost + totalTax).toFixed(2);
   const formattedTotalTax = totalTax.toFixed(2);
+
+  useEffect(() => {
+    setTotalCost(formattedTotalCost);
+  }, [formattedTotalCost, setTotalCost, totalCost]);
 
   return (
     <>

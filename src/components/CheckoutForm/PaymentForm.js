@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { Typography, Button, Divider } from '@mui/material';
 import { Elements, CardElement, ElementsConsumer } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import { useEffect } from 'react';
 
 import Review from './Review';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
-const PaymentForm = ({ checkoutToken, nextStep, shippingData, onCaptureCheckout, setOrderLoading }) => {
+const PaymentForm = ({ checkoutToken, nextStep, shippingData, onCaptureCheckout, clearError, setOrderLoading }) => { // Adding clearError prop here
   const [loading, setLoading] = useState(false);
-
+  const [totalCost, setTotalCost] = useState(0);
   const handleSubmit = async (event, elements, stripe) => {
     event.preventDefault();
 
@@ -37,9 +38,6 @@ const PaymentForm = ({ checkoutToken, nextStep, shippingData, onCaptureCheckout,
         },
       },
     });
-
-
-    
 
     if (error) {
       console.log('[error]', error);
@@ -71,33 +69,29 @@ const PaymentForm = ({ checkoutToken, nextStep, shippingData, onCaptureCheckout,
         },
         fulfillment: { shipping_method: shippingData.shippingOption },
         payment: {
-          gateway: 'gway_QlW0RpxRGMJXwn',
+          gateway: 'gway_NwRMQmeQad3Blv',
           stripe: {
             payment_method_id: paymentMethod.id,
           },
         },
       };
 
-      
-      
       console.log('orderData', orderData);
       nextStep();
       try {
         await onCaptureCheckout(checkoutToken.id, orderData);
+        clearError(); // Clearing the error message after successful order
       } catch (error) {
         console.error('Failed to capture checkout:', error);
       } finally {
         setOrderLoading(false);
-        
       }
-
-
     }
   };
 
   return (
     <>
-      <Review checkoutToken={checkoutToken} />
+      <Review checkoutToken={checkoutToken} setTotalCost={setTotalCost}/>
       <Divider />
       <Typography variant="h6" gutterBottom style={{ margin: '20px 0' }}>Payment method</Typography>
       <Elements stripe={stripePromise}>
@@ -107,7 +101,7 @@ const PaymentForm = ({ checkoutToken, nextStep, shippingData, onCaptureCheckout,
             <br /> <br />
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <Button type="submit" variant="contained" disabled={!stripe || loading} color="primary">
-                Pay {checkoutToken.subtotal.formatted_with_symbol}
+                Pay ${totalCost}
               </Button>
             </div>
           </form>

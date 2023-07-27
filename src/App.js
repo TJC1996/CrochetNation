@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { commerce } from './lib/commerce'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
+import Home from './components/Home';
 // require('dotenv').config();
-
+import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import { Products, Navbar, Cart, Checkout} from './components'
 import AboutUs from './components/About/AboutUs';
 import ContactUs from './components/Contact/ContactUs';
+import Footer from './components/Footer/Footer';
+import AppMetaTags from './AppMetaTags.js';
+import Gallery from './components/Gallery/Gallery';
+
+
 
 
 const App = () => {
@@ -14,10 +19,16 @@ const App = () => {
   const [cart, setCart] = useState({});
   const [order, setOrder] = useState({});
   const [errorMessage, setErrorMessage] = useState('');
+ 
+  (function () {
+    emailjs.init("o9FZ4o6_bTNsmBLBD");
+  })();
 
-  if (cart && cart.line_items) {
-    console.log(cart);
-  }
+// Debugging Cart/Items
+
+  // if (cart && cart.line_items) {
+  //   console.log(cart);
+  // }
 
   const fetchProducts = async () => {
     const { data } = await commerce.products.list();
@@ -104,11 +115,13 @@ const App = () => {
 
   return (
     <Router>
+      <AppMetaTags />
       <div>
         <Navbar totalItems={cart?.total_items} />
+        
         <Routes>
-
-          <Route exact path="/" element={<Products products={products} onAddToCart={handleAddToCart} />} />
+          <Route exact path="/" element={<Home />} />
+          <Route exact path="/shop" element={<Products products={products} onAddToCart={handleAddToCart} />} />
           <Route exact path="/cart" element={
             <Cart
               cart={cart}
@@ -127,7 +140,9 @@ const App = () => {
           } />
           <Route exact path="/about-us" element={<AboutUs />} />
           <Route exact path="/contact-us" element={<ContactUs />} />
+          <Route exact path="/gallery" element={<Gallery />} />
         </Routes>
+        <Footer />
       </div>
 
     </Router>

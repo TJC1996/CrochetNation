@@ -10,7 +10,7 @@ import {
 const CartItem = ({ item, handleRemoveFromCart, handleUpdateCartQuantity }) => {
   return (
     <StyledCard>
-              <StyledCardMedia image={item.image.url} alt={item.name} />
+              <StyledCardMedia image={item.image.url} alt={item.name} sx={{ height: 250 }} />
               <StyledCardContent>
                 <Typography variant="h5" color="textPrimary">{item.name}</Typography>
                 <Typography variant="h5" color="textSecondary">{item.line_total.formatted_with_symbol}</Typography>

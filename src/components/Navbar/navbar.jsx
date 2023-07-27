@@ -27,16 +27,22 @@ import Button from '@mui/material/Button';
 
 const drawerWidth = 240;
 const navItems = [
-  { name: 'Shop', path: '/' },
+  { name: 'Shop', path: '/shop' },
+  { name: 'Gallery', path: '/gallery' },
   { name: 'About', path: '/about-us' },
   { name: 'Contact', path: '/contact-us' },
+  
 ];
 
 
 function DrawerAppBar(props) {
+  
   const { window } = props;
   const { totalItems } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
+
+
+  
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
@@ -69,37 +75,7 @@ function DrawerAppBar(props) {
     </Box>
   );
 
-  // const drawer = (
-  //   <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-  //     <Typography component={Link} to='/' variant="h6" sx={{ my: 2 }}>
-  //       Crochet Nation
-  //     </Typography>
-  //     <Divider />
-  //     <List>
-  //       {navItems.map((item) => (
-  //         <ListItem key={item.name} disablePadding>
-  //           <ListItemButton component={Link} to={item.path} sx={{ textAlign: 'center' }}>
-  //             <ListItemText primary={item.name} />
-  //             {/* <ListItemButton sx={{ textAlign: 'center' }}>
-  //             <ListItemText primary={item} /> */}
-  //           </ListItemButton>
-  //         </ListItem>
-  //       ))}
 
-  //       <ListItem disablePadding sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-  //         <ListItemButton component={Link} to="/cart">
-  //           <Badge badgeContent={totalItems} color="secondary" sx={{ color: '#FFDA03' }}>
-  //             <ShoppingCart />
-  //           </Badge>
-  //         </ListItemButton>
-  //       </ListItem>
-
-
-
-
-  //     </List>
-  //   </Box>
-  // );
 
   const container = window !== undefined ? () => window().document.body : undefined;
   const location = useLocation();
@@ -119,8 +95,9 @@ function DrawerAppBar(props) {
           >
             <MenuIcon />
           </IconButton>
+          <Box sx={{ flexGrow: 1, display: { xs: 'block', sm: 'none' } }} />
           <IconButton size='large' edge='start'>
-            <img src={logo} alt="Avantgarde" height="25px" />
+            <img src={logo} alt="Avantgarde" style={{maxWidth: '25px', maxHeight: '25px'}} />
           </IconButton>
           <Typography component={Link} to='/'
             variant="h6"
@@ -135,24 +112,13 @@ function DrawerAppBar(props) {
               </Button>
             ))}
           </Box>
-          {location.pathname === '/' ? (
+          {location.pathname === '/shop' ? (
             <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
               <IconButton component={Link} to="/cart" aria-label="Show cart items" color="inherit" position='end' sx={{ color: '#FFDA03' }}>
               <Badge badgeContent={totalItems} color="secondary" sx={{ color: '#FFDA03', display: 'inline-block' }}>
               <ShoppingCart />
               </Badge>
               </IconButton>
-              {/* <Link to="/cart">
-
-
-                <IconButton component={Link} to="/cart" aria-label="Show cart items" color="inherit" position='end' sx={{ color: '#FFDA03' }}>
-                  <Badge badgeContent={totalItems} color="secondary" sx={{ color: '#FFDA03', display: 'inline-block' }}>
-                    <ShoppingCart />
-                  </Badge>
-                </IconButton>
-
-              </Link> */}
-
 
             </Box>
           ) : null}

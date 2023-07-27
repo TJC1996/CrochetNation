@@ -1,45 +1,57 @@
-import React from 'react'
-
-import { Card, CardMedia, CardContent, CardActions, makeStyles, Typography, IconButton } from '@mui/material';
+import React, { useState } from 'react';
+import { CardActionArea, IconButton, Typography, Dialog } from '@mui/material';
 import { AddShoppingCart } from '@mui/icons-material';
 import {
   StyledCard,
   StyledCardMedia,
   StyledCardActions,
   StyledCardContent,
+  DialogImage
 } from './styles';
+import { Carousel } from 'react-responsive-carousel';
+import 'react-responsive-carousel/lib/styles/carousel.min.css'; // required styles
 
-// ...
 const Product = ({ product, onAddToCart }) => {
-  // use your styled components as regular components
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   
+
   return (
-    <StyledCard>
-      <StyledCardMedia image={product.image.url} style={{ height: 0, paddingTop: '56.25%', backgroundSize: 'cover' }}/>
-      <StyledCardContent>
-        <Typography variant="h5">
-        {product.name}
-        </Typography>
-        <Typography variant="h6">
-        {product.price.formatted_with_symbol}
-        </Typography>
-      </StyledCardContent>
-      <StyledCardContent>
-      <Typography dangerouslySetInnerHTML={{ __html: product.description}} variant="body2"/>
-      </StyledCardContent>
+    <CardActionArea component="div">
+      <StyledCard>
+        <StyledCardMedia image={product.image.url} style={{ height: '300px', paddingTop: '56.25%', backgroundSize: 'cover' }} onClick={handleClickOpen}/>
+        <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+          <img src={product.image.url} alt={product.name} style={{width: "100%", height: "auto"}}/>
+        </Dialog>
+        
       
-      <StyledCardActions>
-        <IconButton sx={{color: '#0077B6'}} onClick={() => onAddToCart(product.id, 1)} >
-          <AddShoppingCart />
-        </IconButton>
-      </StyledCardActions>
-    </StyledCard>
+
+        <StyledCardContent>
+          <Typography variant="h5">{product.name}</Typography>
+          <Typography variant="h6">{product.price.formatted_with_symbol}</Typography>
+        </StyledCardContent>
+        <StyledCardContent>
+          <Typography
+            dangerouslySetInnerHTML={{ __html: product.description }}
+            variant="body2"
+          />
+        </StyledCardContent>
+
+        <StyledCardActions disableSpacing>
+          <IconButton sx={{ color: '#FFA500' }} onClick={() => onAddToCart(product.id, 1)}>
+            <AddShoppingCart />
+          </IconButton>
+        </StyledCardActions>
+      </StyledCard>
+    </CardActionArea>
   );
 };
 
 export default Product;
-
-
-// onClick={() => onAddToCart(product.id)}
-
-// onClick={() => onAddToCart(product.id, 1)}

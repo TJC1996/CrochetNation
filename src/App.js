@@ -20,9 +20,9 @@ const App = () => {
   const [order, setOrder] = useState({});
   const [errorMessage, setErrorMessage] = useState('');
  
-  (function () {
-    emailjs.init("o9FZ4o6_bTNsmBLBD");
-  })();
+  // (function () {
+  //   emailjs.init("o9FZ4o6_bTNsmBLBD");
+  // })();
 
 // Debugging Cart/Items
 

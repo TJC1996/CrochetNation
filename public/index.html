@@ -12,10 +12,19 @@
   <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
   <link rel="stylesheet" href="%PUBLIC_URL%/style.css" />
   <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Fredoka+One&family=Inconsolata&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Fredoka+One&family=Inconsolata&display=swap"
+    rel="stylesheet">
 
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js">
-    
+
+
+
+  </script>
+  <script type="text/javascript">
+    (function () {
+      emailjs.init("YOUR_PUBLIC_KEY");
+    })();
   </script>
   <title>Crochet Nation</title>
 </head>

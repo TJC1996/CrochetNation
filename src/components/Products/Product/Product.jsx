@@ -6,9 +6,7 @@ import {
   StyledCardMedia,
   StyledCardActions,
   StyledCardContent,
-  DialogImage
 } from './styles';
-import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // required styles
 
 const Product = ({ product, onAddToCart }) => {

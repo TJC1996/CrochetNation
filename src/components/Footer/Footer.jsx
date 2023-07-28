@@ -3,7 +3,6 @@ import { MDBFooter, MDBContainer, MDBBtn } from 'mdb-react-ui-kit';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faTwitter, faGoogle, faInstagram, faLinkedin, faGithub } from '@fortawesome/free-brands-svg-icons';
 import logo from '../Images/Stripe Climate Badge.svg';
-import styles from './styles.css';
 
 export default function Footer() {
   return (

@@ -6,7 +6,6 @@ import {
 } from './styles';
 import CartItem from './CartItem/CartItem';
 import { Link } from 'react-router-dom';
-import Review from '../CheckoutForm/Review';
 import { animated, useSpring } from 'react-spring';
 
 const Cart = ({ cart, handleRemoveFromCart, emptyCart, handleUpdateCartQuantity }) => {
@@ -55,31 +54,6 @@ const Cart = ({ cart, handleRemoveFromCart, emptyCart, handleUpdateCartQuantity 
     );
   };
 
-  // const EmptyCart = () => (
-  //   <Box 
-  //     sx={{
-  //       height: '70vh',
-  //       display: 'flex',
-  //       alignItems: 'top',
-  //       justifyContent: 'center',
-
-  //     }}
-  //   >
-  //     <Typography variant="subtitle1">
-  //       You have no items in your shopping cart yet.
-  //       <Link to='/'> Start adding some</Link>!
-  //     </Typography>
-  //   </Box>
-  // );
-
-  // const EmptyCart = () => (
-  //   <Typography variant="subtitle1">You have no items in your shopping cart yet. 
-  //     <Link to='/'> Start adding some</Link>!
-  //     {/* <Button size="large" type="button" variant="contained" color="secondary" onClick={emptyCart}>
-  //     Empty Cart
-  //   </Button> */}
-  //   </Typography>
-  // );
 
   const FilledCart = () => (
     <>

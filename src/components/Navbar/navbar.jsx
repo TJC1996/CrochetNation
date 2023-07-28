@@ -1,7 +1,6 @@
 
 import { Badge } from '@mui/material';
 import { ShoppingCart } from '@mui/icons-material';
-// import { ClassNames } from '@emotion/react';
 import logo from '../../assets/mom2.png';
 import { Link, useLocation } from 'react-router-dom';
 

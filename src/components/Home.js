@@ -1,14 +1,8 @@
 import React from 'react'
-import Mom1 from "../AssetsLanding/mom1.png";
 import BannerImage from "../AssetsLanding/mom2.png";
-import Navbar from './Navbar/navbar'
 import { FiArrowRight } from "react-icons/fi";
 import './Home.css'
-import AboutBackground from "../AssetsLanding/about-background.png";
 import AboutBackgroundImage from "../AssetsLanding/ocean.avif";
-import { BsFillPlayCircleFill } from "react-icons/bs";
-import ProfilePic from "../AssetsLanding/john-doe-image.png";
-import { AiFillStar } from "react-icons/ai";
 import { Link } from 'react-router-dom';
 import Hat from "../AssetsLanding/hat.png";
 import Order from "../AssetsLanding/order.png";

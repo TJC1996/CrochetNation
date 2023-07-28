@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography, List, ListItem, ListItemText } from '@mui/material/';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 const Review = ({ checkoutToken, setTotalCost }) => {
   // console.log(setTotalCost);
   // Calculate the total cost including shipping

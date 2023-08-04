@@ -9,18 +9,27 @@ export const ContactUs = () => {
   const sendEmail = (e) => {
     e.preventDefault();
 
-    emailjs.sendForm('service_y9uuecp', 'template_imupfr8', form.current, 'o9FZ4o6_bTNsmBLBD')
-      .then((result) => {
-          console.log(result.text);
-          setMessage('Your message has been sent!');
-          setMessageType('success');
-      }, (error) => {
-          console.log(error.text);
-          setMessage('An error occurred, please try again.');
-          setMessageType('error');
-      });
-  };
+    const userName = form.current.user_name.value;
+    const userEmail = form.current.user_email.value;
+    const userMessage = form.current.message.value;
 
+    emailjs.init('o9FZ4o6_bTNsmBLBD'); // Initialize EmailJS with your user ID
+    emailjs.send('service_y9uuecp', 'template_imupfr8', {
+      user_name: userName,
+      user_email: userEmail,
+      message: userMessage,
+    })
+    .then((result) => {
+        console.log(result.text);
+        setMessage('Your message has been sent!');
+        setMessageType('success');
+    }, (error) => {
+        console.log(error.text);
+        setMessage('An error occurred, please try again.');
+        setMessageType('error');
+    });
+  };
+  
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
       <form ref={form} onSubmit={sendEmail} style={{ width: '70%', textAlign: 'center', backgroundColor: '#f4f4f4', padding: '30px', borderRadius: '8px' }}>
@@ -43,6 +52,11 @@ export const ContactUs = () => {
         <input style={{ padding: '10px 20px', cursor: 'pointer', backgroundColor: '#008CBA', color: '#fff', border: 'none', borderRadius: '5px', marginTop: '10px' }} type="submit" value="Send" />
       </form>
     </div>
+  );
+};
+
+export default ContactUs;
+
   );
 };
 
